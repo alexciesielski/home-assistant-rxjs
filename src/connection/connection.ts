@@ -6,11 +6,6 @@ https://github.com/home-assistant/home-assistant-js-websocket/blob/master/lib/so
 */
 
 import * as ha from 'home-assistant-js-websocket';
-import {
-  subscribeConfig,
-  subscribeEntities,
-  subscribeServices,
-} from 'home-assistant-js-websocket';
 import { BehaviorSubject, from } from 'rxjs';
 import { map, switchMapTo } from 'rxjs/operators';
 import WebSocket from 'ws';
@@ -30,12 +25,14 @@ export class HomeAssistant {
   readonly connection$ = from(this.connectoToHA());
   readonly entities$ = this.getEntities();
   readonly config$ = this.getConfig();
-  readonly services$ = this.getConfig();
+  readonly services$ = this.getServices();
 
   private getEntities() {
     return this.connection$.pipe(
       map(connection =>
-        subscribeEntities(connection, entities => this.entities.next(entities)),
+        ha.subscribeEntities(connection, entities =>
+          this.entities.next(entities),
+        ),
       ),
       switchMapTo(this.entities.asObservable()),
     );
@@ -44,7 +41,7 @@ export class HomeAssistant {
   private getConfig() {
     return this.connection$.pipe(
       map(connection =>
-        subscribeConfig(connection, config => this.config.next(config)),
+        ha.subscribeConfig(connection, config => this.config.next(config)),
       ),
       switchMapTo(this.config.asObservable()),
     );
@@ -53,7 +50,9 @@ export class HomeAssistant {
   private getServices() {
     return this.connection$.pipe(
       map(connection =>
-        subscribeServices(connection, services => this.services.next(services)),
+        ha.subscribeServices(connection, services =>
+          this.services.next(services),
+        ),
       ),
       switchMapTo(this.services.asObservable()),
     );

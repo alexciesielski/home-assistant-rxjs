@@ -1,31 +1,46 @@
 {
   "name": "home-assistant-rxjs",
   "version": "0.0.1",
-  "main": "index.js",
-  "author": "Alexander Ciesielski",
+  "module": "dist/index.js",
+  "author": "Alexander Ciesielski <alexander@ciesielski.co>",
   "license": "MIT",
+  "engines": {
+    "node": ">=12"
+  },
+  "main": "dist/ha-rxjs.umd.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "exports": {
+    "import": "dist/index.js",
+    "default": "dist/ha-rxjs.umd.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "tsnd --respawn src/index.ts --host http://homeassistant:8123",
-    "start": "tsc && node ./dist/index.js",
-    "build": "tsc",
+    "build": "tsc && rollup dist/index.js --format umd --name HARXJS --file dist/ha-rxjs.umd.js",
     "build:watch": "tsc --watch",
+    "typecheck": "tsc",
+    "prestart": "npm run build",
+    "start": "node --experimental-modules --es-module-specifier-resolution=node ./dist/index.js",
     "lint:base": "eslint --ext .js,.json,.ts",
     "lint": "npm run lint:base 'src/**'"
   },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "npm run lint:base --fix",
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "dotenv": "^8.2.0",
+    "home-assistant-js-websocket": "^5.1.0",
+    "rollup": "^2.3.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "rxjs": "^6.5.4",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.0.0",
-    "@types/node": "^13.7.1",
+    "@types/node": "^13.9.0",
     "@types/ws": "^7.2.3",
     "@typescript-eslint/eslint-plugin": "^2.19.2",
     "@typescript-eslint/parser": "^2.19.2",
@@ -40,14 +55,15 @@
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.5"
   },
-  "engines": {
-    "node": ">=12"
+  "lint-staged": {
+    "*.{ts,js,json,css,md}": [
+      "npm run lint:base --fix",
+      "prettier --write"
+    ]
   },
-  "dependencies": {
-    "command-line-args": "^5.1.1",
-    "dotenv": "^8.2.0",
-    "home-assistant-js-websocket": "^5.1.0",
-    "rxjs": "^6.5.4",
-    "ws": "^7.2.3"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

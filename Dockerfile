@@ -3,40 +3,18 @@ FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
-
 # Copy data for add-on
 COPY run.sh /
-RUN chmod a+x /run.sh
+COPY data /data/
 
 WORKDIR /usr/src/
-COPY package.json package-lock.json tsconfig.json src ./
-
-# Set shell
-# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+COPY . .
 
 # Setup base
-RUN apk add --no-cache jq nodejs npm
-
-    # \
-    # && npm config set unsafe-perm true \
-    # \
-    # && npm install \
-    #     --no-audit \
-    #     --no-optional \
-    #     --no-update-notifier \
-    #     --only=production \
-    #     --unsafe-perm
-    # \
-    # && npm cache clear --force \
-    # \
-    # && apk del --no-cache --purge .build-dependencies \
-    # && rm -fr \
-    #     /tmp/* \
-    #     /etc/nginx
-
+RUN apk add --no-cache jq curl nodejs npm
 RUN npm i
 
-# WORKDIR /
+RUN chmod a+x /run.sh
 CMD ["/run.sh"]
 
-# CMD ["npm", "start", "--token", "${SUPERVISOR_TOKEN}"]
+#https://github.com/nodejs/node/commit/e65a904f111276c244ab5ab1ee35f6ba27b1fd52

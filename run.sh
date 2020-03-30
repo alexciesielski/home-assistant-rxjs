@@ -1,8 +1,12 @@
-#!/usr/bin/env bashio
-set +u
+#!/usr/bin/with-contenv bashio
+ls
 
-CONFIG_PATH=/data/options.json
+CONFIG_PATH=./data/options.json
 HOST=$(jq --raw-output ".host" $CONFIG_PATH)
 TOKEN=$(jq --raw-output ".token" $CONFIG_PATH)
 
-npm start --host "$HOST" --token "$TOKEN"
+node -v
+npm -v
+
+npm run build
+node dist/index.js '--host="$HOST"' '--token="$TOKEN"'
