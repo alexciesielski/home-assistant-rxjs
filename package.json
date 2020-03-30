@@ -1,0 +1,53 @@
+{
+  "name": "home-assistant-rxjs",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Alexander Ciesielski",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsnd --respawn src/index.ts --host http://homeassistant:8123",
+    "start": "tsc && node ./dist/index.js",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "lint:base": "eslint --ext .js,.json,.ts",
+    "lint": "npm run lint:base 'src/**'"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "npm run lint:base --fix",
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "devDependencies": {
+    "@types/command-line-args": "^5.0.0",
+    "@types/node": "^13.7.1",
+    "@types/ws": "^7.2.3",
+    "@typescript-eslint/eslint-plugin": "^2.19.2",
+    "@typescript-eslint/parser": "^2.19.2",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.7",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.5"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "dotenv": "^8.2.0",
+    "home-assistant-js-websocket": "^5.1.0",
+    "rxjs": "^6.5.4",
+    "ws": "^7.2.3"
+  }
+}

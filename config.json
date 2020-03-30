@@ -1,0 +1,18 @@
+{
+  "name": "HA RXJS",
+  "version": "1",
+  "slug": "ha_rxjs",
+  "description": "Home Assistant RXJS Automation",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "startup": "before",
+  "boot": "auto",
+  "homeassistant_api": true,
+  "options": {
+    "host": "http://localhost:8123",
+    "token": ""
+  },
+  "schema": {
+    "host": "str",
+    "token": "str"
+  }
+}
