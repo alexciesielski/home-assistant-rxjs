@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "node",
     "lib": ["es2019"],
     "declaration": true,
     "sourceMap": true,
@@ -15,6 +16,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["lib", "example"],
+  "include": ["lib"],
   "exclude": ["node_modules"]
 }

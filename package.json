@@ -7,8 +7,15 @@
   "engines": {
     "node": ">=12"
   },
+  "main": "dist/haws.umd.js",
+  "module": "dist/index.js",
+  "exports": {
+    "import": "dist/index.js",
+    "default": "dist/haws.umd.js"
+  },
   "types": "dist/index.d.ts",
-  "source": "src/index.ts",
+  "source": "index.ts",
+  "type": "module",
   "files": [
     "dist"
   ],
@@ -17,11 +24,11 @@
     "url": "https://github.com/ciesielskico/home-assistant-rxjs"
   },
   "scripts": {
-    "dev": "tsnd --respawn example/index.ts",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "dev": "tsnd -r esm --respawn example/index.ts",
+    "prebuild": "rimraf dist",
+    "build": "tsc && rollup -c rollup.config.ts",
     "prestart": "npm run build",
-    "start": "node -r esm ./dist/example/index.js",
+    "start": "node -r esm ./dist/index.js",
     "lint:base": "eslint --ext .js,.json,.ts",
     "lint": "npm run lint:base 'src/**'"
   },
@@ -45,6 +52,14 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.3.1",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.18.0",
     "ts-node-dev": "^1.0.0-pre.44"
   },
   "lint-staged": {

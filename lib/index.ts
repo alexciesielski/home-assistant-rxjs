@@ -61,7 +61,6 @@ export class HomeAssistantRXJS {
         this.destroy$.next();
         this.destroy$.complete();
       }),
-      // tap(() => process.exit(0)),
     );
   }
 

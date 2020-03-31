@@ -12,9 +12,9 @@ if test -f "$CONFIG_PATH"; then
     echo "$CONFIG_PATH exists"
     TOKEN=$(jq --raw-output ".token" $CONFIG_PATH)
     
-    node -r esm dist/example/index.js --token="$TOKEN"
+    # node -r esm dist/example/index.js --token="$TOKEN"
 else
-    node -r esm dist/example/index.js
+    # node -r esm dist/example/index.js
 fi
 
 

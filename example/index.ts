@@ -1,13 +1,14 @@
-import { filter, switchMap, take, tap } from 'rxjs/operators';
+import { delay, filter, switchMapTo } from 'rxjs/operators';
 import { HomeAssistantRXJS } from '../lib';
+import { Office } from './office';
 
 const harxjs = new HomeAssistantRXJS();
-
-harxjs.services$
+const office = new Office(harxjs);
+office.motion$
   .pipe(
-    filter(x => !!x),
-    take(1),
-    tap(x => console.log('connected')),
-    switchMap(() => harxjs.destroy()),
+    filter(state => state === 'on'),
+    switchMapTo(office.turnOnCeilingLight()),
+    delay(5000),
+    switchMapTo(office.turnOffCeilingLight()),
   )
   .subscribe();
