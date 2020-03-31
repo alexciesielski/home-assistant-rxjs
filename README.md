@@ -1,4 +1,6 @@
-# Home Assistant JS Websocket + RXJS = home-assistant-rxjs
+# home-assistant-rxjs
+
+rxjs wrapper for [home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket)
 
 ## Getting started
 
@@ -14,4 +16,4 @@
 
 #### Local run
 
-`docker run --rm -v /data:/data ha-rxjs`
+`docker run --rm -e SUPERVISOR_TOKEN="<long-lived-access-token>" ha-rxjs`

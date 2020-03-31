@@ -4,27 +4,52 @@ import {
   HassConfig,
   subscribeConfig,
 } from 'home-assistant-js-websocket';
-import { BehaviorSubject, from, Observable } from 'rxjs';
-import { filter, switchMap, switchMapTo } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import {
+  filter,
+  switchMap,
+  switchMapTo,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { createSocket } from './connection/create-socket';
 import { HomeAssistantEntities } from './entities';
 import { HomeAssistantServices } from './services';
 
 export class HomeAssistantRXJS {
-  constructor(public host: string, private token: string) {}
+  constructor(public host: string, private token: string) {
+    process.on('SIGTERM', () => this.destroy().subscribe(process.exit(0)));
+  }
 
+  private readonly destroy$ = new Subject<void>();
   readonly connection$ = from(this.connectoToHA(this.host, this.token)).pipe(
     filter(connection => !!connection),
   );
 
-  readonly services = new HomeAssistantServices(this);
+  readonly services = new HomeAssistantServices(
+    this.connection$,
+    this.destroy$,
+  );
   readonly services$ = this.services.services$;
 
-  readonly entities = new HomeAssistantEntities(this);
+  readonly entities = new HomeAssistantEntities(
+    this.connection$,
+    this.destroy$,
+  );
   readonly entities$ = this.entities.entities$;
 
   private readonly config = new BehaviorSubject<Partial<HassConfig>>({});
   readonly config$ = this.getConfig();
+
+  destroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    return this.connection$.pipe(
+      take(1),
+      tap(connection => connection.close()),
+    );
+  }
 
   private getConfig() {
     return this.connection$.pipe(
@@ -42,13 +67,14 @@ export class HomeAssistantRXJS {
           }),
       ),
       switchMapTo(this.config.asObservable()),
+      takeUntil(this.destroy$),
     );
   }
 
-  private async connectoToHA(host: string, token: string) {
+  private connectoToHA(host: string, token: string) {
     const auth = createLongLivedTokenAuth(host, token);
 
-    return await createConnection({
+    return createConnection({
       createSocket: () => createSocket(auth, true),
     });
   }

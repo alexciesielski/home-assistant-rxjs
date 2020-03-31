@@ -3,16 +3,16 @@ FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
-# Copy data for add-on
 COPY run.sh /
-#COPY data /data/
-
-WORKDIR /usr/src/
+WORKDIR /usr/
 COPY . .
 
 # Setup base
-RUN apk add --no-cache jq curl nodejs npm
-RUN npm i
+RUN apk add --no-cache jq nodejs npm
+RUN npm install \
+        --no-audit \
+        --no-update-notifier \
+        --unsafe-perm
 
 RUN chmod a+x /run.sh
 CMD ["/run.sh"]
