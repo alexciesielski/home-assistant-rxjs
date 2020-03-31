@@ -1,8 +1,9 @@
 import commandLineArgs from 'command-line-args';
 import { config as readEnvVars } from 'dotenv';
-import { HomeAssistant } from './connection/connection';
+import { filter, take } from 'rxjs/operators';
+import { HomeAssistantRXJS } from '../lib';
 
-interface CommandLineOptions {
+export interface CommandLineOptions {
   host?: string;
   token?: string;
 }
@@ -19,21 +20,17 @@ if (!options) {
   throw new Error('No command line arguments passed.');
 }
 
-const host = options.host ?? 'http://localhost:8123';
+const host = options.host ?? 'http://homeassistant:8123';
 const token = options.token || process.env.TOKEN;
 
 if (!token) {
   throw new Error('Need to provide a long-lived access token!');
 }
 
-const ha = new HomeAssistant(host, token);
-
-ha.services$
-  .pipe
-  /* tap(entities =>
-      console.log(`# of entities: ${Object.keys(entities).length}`),
-    ), */
-  // filter(entities => Object.keys(entities).length > 0),
-  // map(entities => JSON.stringify(entities, null, 2)),
-  ()
+const harxjs = new HomeAssistantRXJS(host, token);
+harxjs.services$
+  .pipe(
+    filter(config => Object.keys(config).length > 0),
+    take(1),
+  )
   .subscribe(console.log);

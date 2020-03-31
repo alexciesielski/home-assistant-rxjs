@@ -1,36 +1,29 @@
 {
   "name": "home-assistant-rxjs",
   "version": "0.0.1",
-  "module": "dist/index.js",
   "author": "Alexander Ciesielski <alexander@ciesielski.co>",
   "license": "MIT",
   "engines": {
     "node": ">=12"
   },
-  "main": "dist/ha-rxjs.umd.js",
-  "type": "module",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "exports": {
-    "import": "dist/index.js",
-    "default": "dist/ha-rxjs.umd.js"
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "dev": "tsnd --respawn src/index.ts --host http://homeassistant:8123",
-    "build": "tsc && rollup dist/index.js --format umd --name HARXJS --file dist/ha-rxjs.umd.js",
+    "dev": "tsnd --respawn example/index.ts",
+    "build": "tsc",
     "build:watch": "tsc --watch",
-    "typecheck": "tsc",
     "prestart": "npm run build",
-    "start": "node --experimental-modules --es-module-specifier-resolution=node ./dist/index.js",
+    "start": "node -r esm ./dist/index.js",
     "lint:base": "eslint --ext .js,.json,.ts",
     "lint": "npm run lint:base 'src/**'"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
     "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
     "home-assistant-js-websocket": "^5.1.0",
     "rollup": "^2.3.0",
     "rollup-plugin-terser": "^5.3.0",
@@ -50,10 +43,10 @@
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
-    "nodemon": "^2.0.2",
+    "mv": "^2.1.1",
     "prettier": "^1.19.1",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   },
   "lint-staged": {
     "*.{ts,js,json,css,md}": [

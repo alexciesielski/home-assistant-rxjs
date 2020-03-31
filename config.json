@@ -8,11 +8,9 @@
   "boot": "auto",
   "homeassistant_api": true,
   "options": {
-    "host": "http://localhost:8123",
     "token": ""
   },
   "schema": {
-    "host": "str",
     "token": "str"
   }
 }

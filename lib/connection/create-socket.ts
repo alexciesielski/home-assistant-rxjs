@@ -5,70 +5,19 @@ This is slightly modified version of
 https://github.com/home-assistant/home-assistant-js-websocket/blob/master/lib/socket.ts
 */
 
-import * as ha from 'home-assistant-js-websocket';
-import { BehaviorSubject, from } from 'rxjs';
-import { map, switchMapTo } from 'rxjs/operators';
+// import * as ha from 'home-assistant-js-websocket';
+import {
+  Auth,
+  ERR_CANNOT_CONNECT,
+  ERR_INVALID_AUTH,
+  MSG_TYPE_AUTH_INVALID,
+  MSG_TYPE_AUTH_OK,
+  MSG_TYPE_AUTH_REQUIRED,
+} from 'home-assistant-js-websocket';
 import WebSocket from 'ws';
 
-const MSG_TYPE_AUTH_REQUIRED = 'auth_required';
-const MSG_TYPE_AUTH_INVALID = 'auth_invalid';
-const MSG_TYPE_AUTH_OK = 'auth_ok';
-const ERR_INVALID_AUTH = 2;
-
-export class HomeAssistant {
-  constructor(private host: string, private token: string) {}
-
-  private readonly entities = new BehaviorSubject<ha.HassEntities>({});
-  private readonly config = new BehaviorSubject<Partial<ha.HassConfig>>({});
-  private readonly services = new BehaviorSubject<Partial<ha.HassServices>>({});
-
-  readonly connection$ = from(this.connectoToHA());
-  readonly entities$ = this.getEntities();
-  readonly config$ = this.getConfig();
-  readonly services$ = this.getServices();
-
-  private getEntities() {
-    return this.connection$.pipe(
-      map(connection =>
-        ha.subscribeEntities(connection, entities =>
-          this.entities.next(entities),
-        ),
-      ),
-      switchMapTo(this.entities.asObservable()),
-    );
-  }
-
-  private getConfig() {
-    return this.connection$.pipe(
-      map(connection =>
-        ha.subscribeConfig(connection, config => this.config.next(config)),
-      ),
-      switchMapTo(this.config.asObservable()),
-    );
-  }
-
-  private getServices() {
-    return this.connection$.pipe(
-      map(connection =>
-        ha.subscribeServices(connection, services =>
-          this.services.next(services),
-        ),
-      ),
-      switchMapTo(this.services.asObservable()),
-    );
-  }
-
-  private async connectoToHA() {
-    const auth = ha.createLongLivedTokenAuth(this.host, this.token);
-
-    return await ha.createConnection({
-      createSocket: () => createSocket(auth, true),
-    });
-  }
-}
-
 export function createSocket(
-  auth: ha.Auth,
+  auth: Auth,
   ignoreCertificates: boolean,
 ): Promise<any> {
   // Convert from http:// -> ws://, https:// -> wss://
@@ -132,14 +81,14 @@ export function createSocket(
         );
       }
       if (invalidAuth) {
-        promReject(ha.ERR_INVALID_AUTH);
+        promReject(ERR_INVALID_AUTH);
         return;
       }
 
       // Reject if we no longer have to retry
       if (triesLeft === 0) {
         // We never were connected and will not retry
-        promReject(ha.ERR_CANNOT_CONNECT);
+        promReject(ERR_CANNOT_CONNECT);
         return;
       }
 
