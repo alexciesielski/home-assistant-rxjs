@@ -6,9 +6,18 @@ rxjs wrapper for [home-assistant-js-websocket](https://github.com/home-assistant
 
 ### Local Development
 
-`npm run dev`
+1. Create a `.env` file with two properties `HOST` and `ACCESS_TOKEN`.
 
-### Local Docker Development
+```
+HOST=http://homeassistant.local:8123
+ACCESS_TOKEN=<long-lived-access-token>
+```
+
+2. Run the development server
+
+```
+npm run dev
+```
 
 #### Local build
 
@@ -16,4 +25,4 @@ rxjs wrapper for [home-assistant-js-websocket](https://github.com/home-assistant
 
 #### Local run
 
-`docker run --rm -e SUPERVISOR_TOKEN="<long-lived-access-token>" ha-rxjs`
+`docker run --rm --env-file=.env ha-rxjs`

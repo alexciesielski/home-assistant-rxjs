@@ -7,7 +7,7 @@ https://github.com/home-assistant/home-assistant-js-websocket/blob/master/lib/so
 
 // import * as ha from 'home-assistant-js-websocket';
 import {
-  Auth,
+  createConnection,
   ERR_CANNOT_CONNECT,
   ERR_INVALID_AUTH,
   MSG_TYPE_AUTH_INVALID,
@@ -15,12 +15,43 @@ import {
   MSG_TYPE_AUTH_REQUIRED,
 } from 'home-assistant-js-websocket';
 import WebSocket from 'ws';
+import { HomeAssistantRXJSOptions } from '..';
+
+export async function connectToHA() {
+  const connection = await createConnection({
+    createSocket: () =>
+      createSocket({ wsUrl: getWsURL(), token: getToken() }, true),
+  });
+
+  return connection;
+}
+
+function getWsURL() {
+  const host = process.env.HOST;
+  return host
+    ? `ws${host.substr(4)}/api/websocket`
+    : 'ws://supervisor/core/websocket';
+}
+
+function getToken() {
+  const token = process.env.ACCESS_TOKEN || process.env.SUPERVISOR_TOKEN;
+
+  if (!token) {
+    throw new Error(
+      'No access token (SUPERVISOR_TOKEN or ACCESS_TOKEN) found in environment variables.',
+    );
+  }
+
+  return token;
+}
 
 export function createSocket(
-  auth: Auth,
+  auth: HomeAssistantRXJSOptions,
   ignoreCertificates: boolean,
 ): Promise<any> {
-  // Convert from http:// -> ws://, https:// -> wss://
+  console.log(`URL ${auth.wsUrl}`);
+  console.log(`Token ${auth.token}`);
+
   const url = auth.wsUrl;
 
   console.log(
@@ -100,13 +131,13 @@ export function createSocket(
     // Auth is mandatory, so we can send the auth message right away.
     const handleOpen = async () => {
       try {
-        if (auth.expired) {
+        /* if (auth.expired) {
           await auth.refreshAccessToken();
-        }
+        } */
         socket.send(
           JSON.stringify({
             type: 'auth',
-            access_token: auth.accessToken,
+            access_token: auth.token,
           }),
         );
       } catch (err) {

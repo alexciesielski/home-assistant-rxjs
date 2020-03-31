@@ -5,7 +5,10 @@ ENV LANG C.UTF-8
 
 COPY run.sh /
 WORKDIR /usr/
-COPY . .
+COPY example example
+COPY lib lib
+COPY package.json package-lock.json tsconfig.json config.json ./
+
 
 # Setup base
 RUN apk add --no-cache jq nodejs npm

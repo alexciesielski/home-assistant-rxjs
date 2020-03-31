@@ -51,10 +51,7 @@ export class HomeAssistantServices {
               subscriber.next(services),
             );
 
-            subscriber.add(() => {
-              subscriber.complete();
-              unsubscribe();
-            });
+            subscriber.add(() => unsubscribe());
           }),
       ),
       tap(services => this.services.next(services)),

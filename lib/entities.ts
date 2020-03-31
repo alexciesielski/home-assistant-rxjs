@@ -31,10 +31,7 @@ export class HomeAssistantEntities {
               subscriber.next(entities),
             );
 
-            subscriber.add(() => {
-              subscriber.complete();
-              unsubscribe();
-            });
+            subscriber.add(() => unsubscribe());
           }),
       ),
       tap(entities => this.entities.next(entities)),

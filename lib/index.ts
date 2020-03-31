@@ -1,30 +1,40 @@
+import dotenv from 'dotenv';
 import {
-  createConnection,
-  createLongLivedTokenAuth,
+  Connection,
   HassConfig,
   subscribeConfig,
 } from 'home-assistant-js-websocket';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   filter,
+  map,
   switchMap,
   switchMapTo,
   take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
-import { createSocket } from './connection/create-socket';
+import { connectToHA } from './connection';
 import { HomeAssistantEntities } from './entities';
 import { HomeAssistantServices } from './services';
 
+export interface HomeAssistantRXJSOptions {
+  token: string;
+  wsUrl: string;
+}
+
 export class HomeAssistantRXJS {
-  constructor(public host: string, private token: string) {
-    process.on('SIGTERM', () => this.destroy().subscribe(process.exit(0)));
+  constructor() {
+    this.initialize();
   }
 
   private readonly destroy$ = new Subject<void>();
-  readonly connection$ = from(this.connectoToHA(this.host, this.token)).pipe(
+
+  private readonly connection = new BehaviorSubject<Connection | null>(null);
+  readonly connection$ = this.connection.pipe(
     filter(connection => !!connection),
+    // next line is to satisfy TS strictNullChecks
+    map(connection => connection as Connection),
   );
 
   readonly services = new HomeAssistantServices(
@@ -43,12 +53,24 @@ export class HomeAssistantRXJS {
   readonly config$ = this.getConfig();
 
   destroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
     return this.connection$.pipe(
       take(1),
+      tap(() => console.log('Closing connection')),
       tap(connection => connection.close()),
+      tap(() => {
+        this.destroy$.next();
+        this.destroy$.complete();
+      }),
+      // tap(() => process.exit(0)),
     );
+  }
+
+  private async initialize() {
+    process.on('SIGTERM', () => this.destroy().subscribe(process.exit(0)));
+    dotenv.config();
+
+    const connection = await connectToHA();
+    this.connection.next(connection);
   }
 
   private getConfig() {
@@ -60,22 +82,11 @@ export class HomeAssistantRXJS {
               subscriber.next(config),
             );
 
-            subscriber.add(() => {
-              subscriber.complete();
-              unsubscribe();
-            });
+            subscriber.add(() => unsubscribe());
           }),
       ),
       switchMapTo(this.config.asObservable()),
       takeUntil(this.destroy$),
     );
-  }
-
-  private connectoToHA(host: string, token: string) {
-    const auth = createLongLivedTokenAuth(host, token);
-
-    return createConnection({
-      createSocket: () => createSocket(auth, true),
-    });
   }
 }
