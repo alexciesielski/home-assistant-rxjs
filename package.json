@@ -23,8 +23,9 @@
     "build:module": "tsc -p tsconfig.module.json",
     "prestart": "npm run build",
     "start": "node -r esm ./dist/index.js",
-    "lint:base": "eslint --ext .js,.json,.ts",
-    "lint": "npm run lint:base 'lib/**'"
+    "lint": "eslint lib/**",
+    "lint:fix": "npm run lint -- --fix",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "dotenv": "^8.2.0",

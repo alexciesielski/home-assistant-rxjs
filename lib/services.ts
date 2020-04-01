@@ -1,11 +1,11 @@
 import {
-  callService,
   Connection,
-  getServices,
   HassServices,
+  callService,
+  getServices,
   subscribeServices,
 } from 'home-assistant-js-websocket';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import {
   shareReplay,
   switchMap,

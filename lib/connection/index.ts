@@ -7,12 +7,12 @@ https://github.com/home-assistant/home-assistant-js-websocket/blob/master/lib/so
 
 // import * as ha from 'home-assistant-js-websocket';
 import {
-  createConnection,
   ERR_CANNOT_CONNECT,
   ERR_INVALID_AUTH,
   MSG_TYPE_AUTH_INVALID,
   MSG_TYPE_AUTH_OK,
   MSG_TYPE_AUTH_REQUIRED,
+  createConnection,
 } from 'home-assistant-js-websocket';
 import WebSocket from 'ws';
 import { HomeAssistantRXJSOptions } from '..';
