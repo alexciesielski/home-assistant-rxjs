@@ -7,18 +7,10 @@
   "engines": {
     "node": ">=12"
   },
-  "main": "dist/haws.umd.js",
-  "module": "dist/index.js",
-  "exports": {
-    "import": "dist/index.js",
-    "default": "dist/haws.umd.js"
-  },
-  "types": "dist/index.d.ts",
-  "source": "index.ts",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
+  "main": "dist/main/index.js",
+  "typings": "dist/types/index.d.ts",
+  "module": "dist/module/index.js",
+  "source": "lib/index.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/ciesielskico/home-assistant-rxjs"
@@ -26,11 +18,13 @@
   "scripts": {
     "dev": "tsnd -r esm --respawn example/index.ts",
     "prebuild": "rimraf dist",
-    "build": "tsc && rollup -c rollup.config.ts",
+    "build": "npm run build:main && npm run build:module",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
     "prestart": "npm run build",
     "start": "node -r esm ./dist/index.js",
     "lint:base": "eslint --ext .js,.json,.ts",
-    "lint": "npm run lint:base 'src/**'"
+    "lint": "npm run lint:base 'lib/**'"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -53,18 +47,11 @@
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.3.1",
-    "rollup-plugin-commonjs": "^9.1.8",
-    "rollup-plugin-copy": "^3.3.0",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.18.0",
     "ts-node-dev": "^1.0.0-pre.44"
   },
   "lint-staged": {
     "*.{ts,js,json,css,md}": [
-      "npm run lint:base --fix",
+      "npm run lint -- --fix",
       "prettier --write"
     ]
   },

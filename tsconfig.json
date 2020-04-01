@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["es2019"],
     "declaration": true,
+    "declarationDir": "dist/types",
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "dist/main",
     "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -14,8 +15,10 @@
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": true
   },
-  "include": ["lib"],
-  "exclude": ["node_modules"]
+  "include": ["lib/**/*.ts"],
+  "exclude": ["node_modules/**"]
 }
