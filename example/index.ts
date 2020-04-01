@@ -1,18 +1,20 @@
-import { tap } from 'rxjs/operators';
+import {
+  delay,
+  distinctUntilChanged,
+  filter,
+  switchMapTo,
+} from 'rxjs/operators';
 import { HomeAssistantRXJS } from '../lib';
+import { Room } from './room';
 
 const ha = new HomeAssistantRXJS();
-ha.entities.pipe(tap(console.log)).subscribe();
-// ha.connection$.pipe(tap(console.log), take(1)).subscribe(() => ha.destroy());
-// harxjs.destroy();
-/* const office = new Office(harxjs);
-office.motion$
+const room = new Room(ha);
+room.motion$
   .pipe(
-    // filter(state => state === 'on'),
-    switchMapTo(office.turnOnCeilingLight()),
+    distinctUntilChanged(),
+    filter(state => state === 'on'),
+    switchMapTo(room.turnOnCeilingLight()),
     delay(2000),
-    switchMapTo(office.turnOffCeilingLight()),
-    tap(() => harxjs.destroy()),
-    take(1),
+    switchMapTo(room.turnOffCeilingLight()),
   )
-  .subscribe(); */
+  .subscribe();

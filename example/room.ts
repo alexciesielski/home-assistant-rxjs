@@ -2,7 +2,7 @@ import { tap } from 'rxjs/operators';
 import { HomeAssistantRXJS } from '../lib';
 import { select } from '../lib/util';
 
-export class Office {
+export class Room {
   constructor(private ha: HomeAssistantRXJS) {}
 
   readonly motion$ = this.ha.entities.pipe(

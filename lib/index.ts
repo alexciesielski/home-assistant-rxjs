@@ -1,4 +1,4 @@
-import { defer, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { HomeAssistantConnection } from './connection';
 import { HomeAssistantEntities } from './entities';
 import { HomeAssistantLights } from './lights';
@@ -16,12 +16,11 @@ export class HomeAssistantRXJS {
 
   readonly destroy$ = new Subject<void>();
 
-  private readonly connection = new HomeAssistantConnection(this.destroy$);
-  readonly connection$ = defer(() => this.connection.connect());
+  private readonly connection = new HomeAssistantConnection();
+  readonly connection$ = this.connection.asObservable();
 
   readonly services = new HomeAssistantServices(this, this.destroy$);
   readonly entities = new HomeAssistantEntities(this, this.destroy$);
-
   readonly lights = new HomeAssistantLights(this);
 
   destroy() {
@@ -29,5 +28,6 @@ export class HomeAssistantRXJS {
     this.destroy$.next();
     this.destroy$.complete();
     this.connection.disconnect();
+    process.exit(0);
   }
 }

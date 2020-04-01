@@ -15,35 +15,37 @@ import {
   MSG_TYPE_AUTH_OK,
   MSG_TYPE_AUTH_REQUIRED,
 } from 'home-assistant-js-websocket';
-import { BehaviorSubject, from, Observable } from 'rxjs';
-import { filter, map, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import WebSocket from 'ws';
 import { HomeAssistantRXJSOptions } from '..';
 
 export class HomeAssistantConnection extends BehaviorSubject<Connection | null> {
-  constructor(private destroy$: Observable<void>) {
+  constructor() {
     super(null);
     dotenv.config();
+    this.connect();
   }
 
-  connect() {
-    return from(
-      createConnection({
-        createSocket: () =>
-          createSocket({ wsUrl: getWsURL(), token: getToken() }, true),
-      }),
-    ).pipe(
-      tap(connection => this.next(connection)),
-      switchMapTo(this),
+  asObservable(): Observable<Connection> {
+    return this.pipe(
       filter(connection => !!connection),
       map(connection => connection as Connection),
-      takeUntil(this.destroy$),
     );
   }
 
   disconnect() {
     this.value?.close();
     this.complete();
+  }
+
+  private async connect() {
+    const connection = await createConnection({
+      createSocket: () =>
+        createSocket({ wsUrl: getWsURL(), token: getToken() }, true),
+    });
+
+    this.next(connection);
   }
 }
 
