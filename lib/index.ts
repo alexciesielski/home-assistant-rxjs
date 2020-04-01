@@ -16,6 +16,7 @@ import {
 } from 'rxjs/operators';
 import { connectToHA } from './connection';
 import { HomeAssistantEntities } from './entities';
+import { HomeAssistantLights } from './lights';
 import { HomeAssistantServices } from './services';
 
 export interface HomeAssistantRXJSOptions {
@@ -37,17 +38,13 @@ export class HomeAssistantRXJS {
     map(connection => connection as Connection),
   );
 
-  readonly services = new HomeAssistantServices(
-    this.connection$,
-    this.destroy$,
-  );
+  readonly services = new HomeAssistantServices(this, this.destroy$);
   readonly services$ = this.services.services$;
 
-  readonly entities = new HomeAssistantEntities(
-    this.connection$,
-    this.destroy$,
-  );
+  readonly entities = new HomeAssistantEntities(this, this.destroy$);
   readonly entities$ = this.entities.entities$;
+
+  readonly lights = new HomeAssistantLights(this, this.destroy$);
 
   private readonly config = new BehaviorSubject<Partial<HassConfig>>({});
   readonly config$ = this.getConfig();

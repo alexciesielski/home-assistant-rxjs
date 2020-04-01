@@ -1,11 +1,10 @@
 import {
-  Connection,
-  HassServices,
   callService,
   getServices,
+  HassServices,
   subscribeServices,
 } from 'home-assistant-js-websocket';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import {
   shareReplay,
   switchMap,
@@ -14,10 +13,11 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
+import { HomeAssistantRXJS } from '.';
 
 export class HomeAssistantServices {
   constructor(
-    private connection$: Observable<Connection>,
+    private ha: HomeAssistantRXJS,
     private destroy$: Observable<void>,
   ) {}
 
@@ -26,7 +26,7 @@ export class HomeAssistantServices {
   readonly services$ = this.subscribeServices();
 
   call<T extends object>(domain: string, service: string, serviceData?: T) {
-    return this.connection$.pipe(
+    return this.ha.connection$.pipe(
       switchMap(connection =>
         from(callService(connection, domain, service, serviceData)),
       ),
@@ -35,7 +35,7 @@ export class HomeAssistantServices {
   }
 
   getServicesOnce() {
-    return this.connection$.pipe(
+    return this.ha.connection$.pipe(
       switchMap(connection => from(getServices(connection))),
       take(1),
       takeUntil(this.destroy$),
@@ -43,7 +43,7 @@ export class HomeAssistantServices {
   }
 
   private subscribeServices() {
-    return this.connection$.pipe(
+    return this.ha.connection$.pipe(
       switchMap(
         connection =>
           new Observable<HassServices>(subscriber => {

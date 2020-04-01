@@ -13,14 +13,10 @@ export class Office {
   );
 
   turnOnCeilingLight() {
-    return this.harxjs.services.call('light', 'turn_on', {
-      entity_id: 'light.office_office_ceiling_light_104',
-    });
+    return this.harxjs.lights.turnOn('light.office_office_ceiling_light_104');
   }
 
   turnOffCeilingLight() {
-    return this.harxjs.services.call('light', 'turn_off', {
-      entity_id: 'light.office_office_ceiling_light_104',
-    });
+    return this.harxjs.lights.turnOff('light.office_office_ceiling_light_104');
   }
 }

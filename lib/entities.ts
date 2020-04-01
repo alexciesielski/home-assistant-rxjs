@@ -1,8 +1,4 @@
-import {
-  Connection,
-  HassEntities,
-  subscribeEntities,
-} from 'home-assistant-js-websocket';
+import { HassEntities, subscribeEntities } from 'home-assistant-js-websocket';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   shareReplay,
@@ -11,10 +7,11 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
+import { HomeAssistantRXJS } from '.';
 
 export class HomeAssistantEntities {
   constructor(
-    private connection$: Observable<Connection>,
+    private ha: HomeAssistantRXJS,
     private destroy$: Observable<void>,
   ) {}
 
@@ -23,7 +20,7 @@ export class HomeAssistantEntities {
   readonly entities$ = this.subscribeEntities();
 
   private subscribeEntities() {
-    return this.connection$.pipe(
+    return this.ha.connection$.pipe(
       switchMap(
         connection =>
           new Observable<HassEntities>(subscriber => {
