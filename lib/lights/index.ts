@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { HomeAssistantRXJS } from '..';
 
 export enum Light {
@@ -8,30 +7,54 @@ export enum Light {
   Toggle = 'toggle',
 }
 
-export class HomeAssistantLights {
-  constructor(
-    private ha: HomeAssistantRXJS,
-    private destroy$: Observable<void>,
-  ) {}
+export interface CommonLightAttributes {
+  entity_id: string;
+  transition: number;
+  flash: 'short' | 'long';
+}
 
-  turnOn(entity_id: string, attributes = {}) {
+export interface LightTurnOnAttributes extends CommonLightAttributes {
+  rgb_color: [number, number, number];
+  color_name: string;
+  hs_color: [number, number];
+  xy_color: [number, number];
+  color_temp: number;
+  kelvin: number;
+  white_value: number;
+  brightness: number;
+  brightness_pct: number;
+  brightness_step: number;
+  brightness_step_pct: number;
+  profile: string;
+  effect: string;
+}
+
+export interface LightTurnOffAttributes extends CommonLightAttributes {}
+
+export class HomeAssistantLights {
+  constructor(private ha: HomeAssistantRXJS) {}
+
+  turnOn(entity_id: string, attributes = {} as Partial<LightTurnOnAttributes>) {
     return this.ha.services.call(Light.Domain, Light.TurnOn, {
       ...attributes,
       entity_id,
     });
   }
 
-  turnOff(entity_id: string, attributes = {}) {
+  turnOff(
+    entity_id: string,
+    attributes = {} as Partial<LightTurnOffAttributes>,
+  ) {
     return this.ha.services.call(Light.Domain, Light.TurnOff, {
       ...attributes,
       entity_id,
     });
   }
 
-  toggle(entity_id: string, attributes = {}) {
+  toggle(entity_id: string, attributes = {} as Partial<LightTurnOnAttributes>) {
     return this.ha.services.call(Light.Domain, Light.Toggle, {
-      ...attributes,
       entity_id,
+      ...attributes,
     });
   }
 }

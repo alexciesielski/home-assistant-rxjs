@@ -11,6 +11,7 @@
   "typings": "dist/types/index.d.ts",
   "module": "dist/module/index.js",
   "source": "lib/index.ts",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/ciesielskico/home-assistant-rxjs"
@@ -22,7 +23,7 @@
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
     "prestart": "npm run build",
-    "start": "node -r esm ./dist/index.js",
+    "start": "node -r esm ./dist/module/index.js",
     "lint": "eslint lib/**",
     "lint:fix": "npm run lint -- --fix",
     "lint-staged": "lint-staged"

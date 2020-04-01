@@ -5,25 +5,46 @@ This is slightly modified version of
 https://github.com/home-assistant/home-assistant-js-websocket/blob/master/lib/socket.ts
 */
 
-// import * as ha from 'home-assistant-js-websocket';
+import dotenv from 'dotenv';
 import {
+  Connection,
+  createConnection,
   ERR_CANNOT_CONNECT,
   ERR_INVALID_AUTH,
   MSG_TYPE_AUTH_INVALID,
   MSG_TYPE_AUTH_OK,
   MSG_TYPE_AUTH_REQUIRED,
-  createConnection,
 } from 'home-assistant-js-websocket';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { filter, map, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 import WebSocket from 'ws';
 import { HomeAssistantRXJSOptions } from '..';
 
-export async function connectToHA() {
-  const connection = await createConnection({
-    createSocket: () =>
-      createSocket({ wsUrl: getWsURL(), token: getToken() }, true),
-  });
+export class HomeAssistantConnection extends BehaviorSubject<Connection | null> {
+  constructor(private destroy$: Observable<void>) {
+    super(null);
+    dotenv.config();
+  }
 
-  return connection;
+  connect() {
+    return from(
+      createConnection({
+        createSocket: () =>
+          createSocket({ wsUrl: getWsURL(), token: getToken() }, true),
+      }),
+    ).pipe(
+      tap(connection => this.next(connection)),
+      switchMapTo(this),
+      filter(connection => !!connection),
+      map(connection => connection as Connection),
+      takeUntil(this.destroy$),
+    );
+  }
+
+  disconnect() {
+    this.value?.close();
+    this.complete();
+  }
 }
 
 function getWsURL() {
@@ -49,9 +70,6 @@ export function createSocket(
   auth: HomeAssistantRXJSOptions,
   ignoreCertificates: boolean,
 ): Promise<any> {
-  console.log(`URL ${auth.wsUrl}`);
-  console.log(`Token ${auth.token}`);
-
   const url = auth.wsUrl;
 
   console.log(
@@ -106,6 +124,8 @@ export function createSocket(
     };
 
     const closeOrError = (errorText?: string) => {
+      console.error('closeOrError', errorText);
+
       if (errorText) {
         console.log(
           `WebSocket Connection to Home Assistant closed with an error: ${errorText}`,

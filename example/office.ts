@@ -1,22 +1,20 @@
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { HomeAssistantRXJS } from '../lib';
+import { select } from '../lib/util';
 
 export class Office {
-  constructor(private harxjs: HomeAssistantRXJS) {}
+  constructor(private ha: HomeAssistantRXJS) {}
 
-  readonly motion$ = this.harxjs.entities$.pipe(
-    map(entities => entities['binary_sensor.office_office_motion_114']),
-    map(motionSensor => motionSensor?.state),
-
-    distinctUntilChanged(),
+  readonly motion$ = this.ha.entities.pipe(
+    select('binary_sensor.office_office_motion_114', 'state'),
     tap(_ => console.log('motion', _)),
   );
 
   turnOnCeilingLight() {
-    return this.harxjs.lights.turnOn('light.office_office_ceiling_light_104');
+    return this.ha.lights.turnOn('light.office_office_ceiling_light_104');
   }
 
   turnOffCeilingLight() {
-    return this.harxjs.lights.turnOff('light.office_office_ceiling_light_104');
+    return this.ha.lights.turnOff('light.office_office_ceiling_light_104');
   }
 }
