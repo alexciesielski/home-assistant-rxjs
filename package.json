@@ -42,7 +42,8 @@
     "test": "mocha -r ts-node/register lib/**/*.spec.ts",
     "test:watch": "npm run test -- --extensions ts --watch --watch-files lib",
     "prerelease": "npm run build",
-    "release": "np"
+    "release": "np --no-publish",
+    "postrelease": "npm publish"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -86,10 +87,6 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "np": {
-    "yarn": false,
-    "contents": "dist"
   },
   "publishConfig": {
     "access": "public"
