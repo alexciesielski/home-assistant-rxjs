@@ -1,9 +1,9 @@
 {
-  "name": "home-assistant-rxjs",
+  "name": "@ciesielskico/home-assistant-rxjs",
   "version": "0.0.1",
   "author": "Alexander Ciesielski <alexander@ciesielski.co>",
   "license": "MIT",
-  "description": "rxjs wrapper for home-assistant-js-websocket",
+  "description": "rxjs addons for home-assistant-js-websocket",
   "keywords": [
     "rxjs",
     "home-assistant",
