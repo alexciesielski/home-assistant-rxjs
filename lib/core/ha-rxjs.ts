@@ -14,6 +14,10 @@ export class HomeAssistantRXJS {
   readonly entities = new HomeAssistantEntities(this, this.destroy$);
   readonly lights = new HomeAssistantLights(this);
 
+  async initialize() {
+    await this.connection.connect();
+  }
+
   destroy() {
     console.log('Closing connection');
     this.destroy$.next();
