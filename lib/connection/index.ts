@@ -16,9 +16,9 @@ import {
   MSG_TYPE_AUTH_REQUIRED,
 } from 'home-assistant-js-websocket';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import WebSocket from 'ws';
 import { HomeAssistantRXJSOptions } from '..';
+import { filterNullOrUndefined } from '../util/operators/filter-truthy';
 
 export class HomeAssistantConnection extends BehaviorSubject<Connection | null> {
   constructor() {
@@ -28,10 +28,7 @@ export class HomeAssistantConnection extends BehaviorSubject<Connection | null> 
   }
 
   asObservable(): Observable<Connection> {
-    return this.pipe(
-      filter(connection => !!connection),
-      map(connection => connection as Connection),
-    );
+    return this.pipe(filterNullOrUndefined());
   }
 
   disconnect() {

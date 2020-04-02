@@ -3,13 +3,14 @@ import { HomeAssistantConnection } from './connection';
 import { HomeAssistantEntities } from './entities';
 import { HomeAssistantLights } from './lights';
 import { HomeAssistantServices } from './services';
+import { select } from './util';
 
-export interface HomeAssistantRXJSOptions {
+interface HomeAssistantRXJSOptions {
   token: string;
   wsUrl: string;
 }
 
-export class HomeAssistantRXJS {
+class HomeAssistantRXJS {
   constructor() {
     process.on('SIGTERM', () => this.destroy());
   }
@@ -31,3 +32,5 @@ export class HomeAssistantRXJS {
     process.exit(0);
   }
 }
+
+export { HomeAssistantRXJS, HomeAssistantRXJSOptions, select };

@@ -8,6 +8,7 @@ import { HomeAssistantRXJS } from '../lib';
 import { Room } from './room';
 
 const ha = new HomeAssistantRXJS();
+// ha.entities.subscribe()
 const room = new Room(ha);
 room.motion$
   .pipe(
