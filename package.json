@@ -18,6 +18,9 @@
   "typings": "dist/typings/index.d.ts",
   "module": "dist/module/index.js",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ciesielskico/home-assistant-rxjs"
