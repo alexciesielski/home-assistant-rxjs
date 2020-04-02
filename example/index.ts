@@ -6,28 +6,21 @@ import {
 } from 'rxjs/operators';
 import { HomeAssistantRXJS, select } from '../lib';
 
-export class Home extends HomeAssistantRXJS {
-  constructor() {
-    super();
-    this.initialize();
-  }
-}
+const home = new HomeAssistantRXJS();
+home.initialize();
 
-const home = new Home();
+const motion$ = home.entities.pipe(
+  select('binary_sensor.hall_motion_sensor', 'state'),
+);
 
 // When motion detected turn the light on
 // and after 2 seconds turn it off
-
-const motion$ = home.entities.pipe(
-  select('binary_sensor.office_office_motion_114', 'state'),
-);
-
 motion$
   .pipe(
     distinctUntilChanged(),
     filter(state => state === 'on'),
-    switchMapTo(home.lights.turnOn('light.office_office_ceiling_light_104')),
+    switchMapTo(home.lights.turnOn('light.hall_light')),
     delay(2000),
-    switchMapTo(home.lights.turnOff('light.office_office_ceiling_light_104')),
+    switchMapTo(home.lights.turnOff('light.hall_light')),
   )
   .subscribe();
