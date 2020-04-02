@@ -38,7 +38,8 @@
     "lint-staged": "lint-staged",
     "typecheck": "tsc --noEmit",
     "test": "mocha -r ts-node/register lib/**/*.spec.ts",
-    "test:watch": "npm run test -- --extensions ts --watch --watch-files lib"
+    "test:watch": "npm run test -- --extensions ts --watch --watch-files lib",
+    "release": "np"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -63,6 +64,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "mocha": "^7.1.1",
+    "np": "^6.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.0",
     "rimraf": "^3.0.2",
@@ -81,5 +83,12 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "np": {
+    "yarn": false,
+    "contents": "dist"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
