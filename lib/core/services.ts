@@ -5,7 +5,7 @@ import {
 } from 'home-assistant-js-websocket';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
-import { HomeAssistantRXJS } from '.';
+import { HomeAssistantRXJS } from './ha-rxjs';
 
 export class HomeAssistantServices extends BehaviorSubject<HassServices> {
   constructor(

@@ -17,8 +17,12 @@ import {
 } from 'home-assistant-js-websocket';
 import { BehaviorSubject, Observable } from 'rxjs';
 import WebSocket from 'ws';
-import { HomeAssistantRXJSOptions } from '..';
 import { filterNullOrUndefined } from '../util/operators/filter-truthy';
+
+interface AuthOptions {
+  token: string;
+  wsUrl: string;
+}
 
 export class HomeAssistantConnection extends BehaviorSubject<Connection | null> {
   constructor() {
@@ -66,7 +70,7 @@ function getToken() {
 }
 
 export function createSocket(
-  auth: HomeAssistantRXJSOptions,
+  auth: AuthOptions,
   ignoreCertificates: boolean,
 ): Promise<any> {
   const url = auth.wsUrl;

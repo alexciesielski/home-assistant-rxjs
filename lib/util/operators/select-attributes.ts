@@ -1,11 +1,11 @@
-import { HassEntity } from 'home-assistant-js-websocket';
+import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { select } from './select';
 
-export function selectAttributes() {
+export function selectAttributes(id: string) {
   return function selectStateOperator(
-    source$: Observable<HassEntity>,
+    source$: Observable<HassEntities>,
   ): Observable<HassEntity['attributes']> {
-    return source$.pipe(pluck('attributes'), distinctUntilChanged());
+    return source$.pipe(select(id, 'attributes'));
   };
 }
