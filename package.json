@@ -19,7 +19,9 @@
   "module": "dist/module/index.js",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "package.json"
   ],
   "repository": {
     "type": "git",
@@ -39,6 +41,7 @@
     "typecheck": "tsc --noEmit",
     "test": "mocha -r ts-node/register lib/**/*.spec.ts",
     "test:watch": "npm run test -- --extensions ts --watch --watch-files lib",
+    "prerelease": "npm run build",
     "release": "np"
   },
   "dependencies": {
