@@ -5,10 +5,6 @@ import { HomeAssistantEntities } from './entities';
 import { HomeAssistantServices } from './services';
 
 export class HomeAssistantRXJS {
-  constructor() {
-    process.on('SIGTERM', () => this.destroy());
-  }
-
   readonly destroy$ = new Subject<void>();
 
   private readonly connection = new HomeAssistantConnection();
@@ -23,6 +19,5 @@ export class HomeAssistantRXJS {
     this.destroy$.next();
     this.destroy$.complete();
     this.connection.disconnect();
-    process.exit(0);
   }
 }

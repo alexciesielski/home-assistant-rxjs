@@ -4,13 +4,19 @@
   "author": "Alexander Ciesielski <alexander@ciesielski.co>",
   "license": "MIT",
   "description": "rxjs wrapper for home-assistant-js-websocket",
+  "keywords": [
+    "rxjs",
+    "home-assistant",
+    "home",
+    "automation",
+    "typescript"
+  ],
   "engines": {
     "node": ">=12"
   },
   "main": "dist/main/index.js",
-  "typings": "dist/types/index.d.ts",
+  "typings": "dist/typings/index.d.ts",
   "module": "dist/module/index.js",
-  "source": "lib/index.ts",
   "type": "module",
   "repository": {
     "type": "git",
@@ -23,7 +29,7 @@
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
     "prestart": "npm run build",
-    "start": "node -r esm ./dist/module/index.js",
+    "start": "node -r esm ./dist/main/index.js",
     "lint": "eslint lib/**",
     "lint:fix": "npm run lint -- --fix",
     "lint-staged": "lint-staged"
