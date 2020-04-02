@@ -78,8 +78,10 @@
     "ts-node-dev": "^1.0.0-pre.44"
   },
   "lint-staged": {
+    "*.ts": [
+      "npm run lint -- --fix"
+    ],
     "*.{ts,js,json,css,md}": [
-      "npm run lint -- --fix",
       "prettier --write"
     ]
   },
