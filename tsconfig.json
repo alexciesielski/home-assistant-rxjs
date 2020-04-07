@@ -24,6 +24,6 @@
     "skipLibCheck": true
   },
   "include": ["lib"],
-  "exclude": ["node_modules/**"],
+  "exclude": ["node_modules/**", "lib/**/*.spec.ts"],
   "compileOnSave": false
 }

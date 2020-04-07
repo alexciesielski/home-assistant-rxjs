@@ -8,11 +8,12 @@ rxjs wrapper for [home-assistant-js-websocket](https://github.com/home-assistant
 
 2. Create long-lived access token under http://homeassistant:8123/profile
 
-3. Create a `.env` file with two properties `HOST` and `ACCESS_TOKEN`.
+3. Create a `.env` file
 
 ```
 HOST=http://homeassistant.local:8123
 ACCESS_TOKEN=<long-lived-access-token>
+LOGLEVEL=INFO
 ```
 
 4. Initialize `HomeAssistantRXJS` and define your automations
@@ -29,7 +30,6 @@ const motion$ = home.entities.pipe(
 // and after 2 seconds turn it off
 motion$
   .pipe(
-    distinctUntilChanged(),
     filter(state => state === 'on'),
     switchMapTo(home.lights.turnOn('light.hall_light')),
     delay(2000),

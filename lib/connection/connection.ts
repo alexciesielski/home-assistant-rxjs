@@ -5,7 +5,6 @@ This is slightly modified version of
 https://github.com/home-assistant/home-assistant-js-websocket/blob/master/lib/socket.ts
 */
 
-import dotenv from 'dotenv';
 import {
   Connection,
   createConnection,
@@ -27,7 +26,6 @@ interface AuthOptions {
 export class HomeAssistantConnection extends BehaviorSubject<Connection | null> {
   constructor() {
     super(null);
-    dotenv.config();
   }
 
   asObservable(): Observable<Connection> {

@@ -5,12 +5,14 @@ import {
 } from 'home-assistant-js-websocket';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { Logger } from '../util/logger';
 import { HomeAssistantRXJS } from './ha-rxjs';
 
 export class HomeAssistantServices extends BehaviorSubject<HassServices> {
   constructor(
     private ha: HomeAssistantRXJS,
     private destroy$: Observable<void>,
+    private logger: Logger,
   ) {
     super({});
     this.subscribeServices();
@@ -21,6 +23,7 @@ export class HomeAssistantServices extends BehaviorSubject<HassServices> {
       switchMap(connection =>
         from(callService(connection, domain, service, serviceData)),
       ),
+      tap(() => this.logger.info(`Called ${domain}.${service}`, serviceData)),
       takeUntil(this.destroy$),
     );
   }

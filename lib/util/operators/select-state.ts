@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { select } from './select';
 
 export function selectState(id: string) {
-  return function(
+  return function (
     source$: Observable<HassEntities>,
   ): Observable<HassEntity['state']> {
     return source$.pipe(select(id, 'state'));
